@@ -1,0 +1,534 @@
+<!DOCTYPE html>
+<html lang="fr" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>IdeaRoast AI | Juge D'Idées Brutal & Drôle</title>
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Google Fonts: Orbitron, Rajdhani, Fira Code -->
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;700;900&family=Rajdhani:wght@500;600;700&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            hud: {
+              bg: '#0a0e17',
+              card: 'rgba(12, 20, 36, 0.90)',
+              border: '#00e5ff',
+              cyan: '#00f0ff',
+              accent: '#2563eb',
+              nul: '#ff0055',
+              mid: '#ffb700',
+              pepite: '#00ff88',
+              glow: 'rgba(0, 240, 255, 0.35)'
+            }
+          },
+          fontFamily: {
+            hud: ['Orbitron', 'sans-serif'],
+            body: ['Rajdhani', 'sans-serif'],
+            mono: ['Fira Code', 'monospace']
+          },
+          boxShadow: {
+            'hud-glow': '0 0 15px rgba(0, 240, 255, 0.25), inset 0 0 10px rgba(0, 240, 255, 0.1)',
+            'neon-btn': '0 0 15px rgba(0, 240, 255, 0.4)',
+            'nul-glow': '0 0 20px rgba(255, 0, 85, 0.4)',
+            'mid-glow': '0 0 20px rgba(255, 183, 0, 0.4)',
+            'pepite-glow': '0 0 20px rgba(0, 255, 136, 0.4)'
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body {
+      background-color: #060911;
+      background-image: 
+        radial-gradient(circle at 50% 0%, rgba(0, 240, 255, 0.15) 0%, transparent 70%),
+        linear-gradient(rgba(0, 200, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(0, 200, 255, 0.03) 1px, transparent 1px);
+      background-size: 100% 100%, 24px 24px, 24px 24px;
+      color: #d1f4ff;
+      font-family: 'Rajdhani', sans-serif;
+      min-height: 100vh;
+      user-select: none;
+    }
+
+    /* Cyber HUD Cards */
+    .hud-card {
+      position: relative;
+      background: rgba(10, 18, 34, 0.88);
+      border: 1px solid rgba(0, 229, 255, 0.3);
+      backdrop-filter: blur(12px);
+      box-shadow: 0 0 20px rgba(0, 229, 255, 0.06);
+      transition: all 0.25s ease;
+    }
+    .hud-card::before, .hud-card::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 8px;
+      border-color: #00f0ff;
+      pointer-events: none;
+    }
+    .hud-card::before { top: -1px; left: -1px; border-top: 2px solid #00f0ff; border-left: 2px solid #00f0ff; }
+    .hud-card::after { bottom: -1px; right: -1px; border-bottom: 2px solid #00f0ff; border-right: 2px solid #00f0ff; }
+
+    /* Scanline Animation */
+    .scanline {
+      position: fixed;
+      top: 0; left: 0; right: 0; height: 6px;
+      background: linear-gradient(to bottom, transparent, rgba(0, 240, 255, 0.25), transparent);
+      animation: scan 8s linear infinite;
+      pointer-events: none;
+      z-index: 100;
+    }
+    @keyframes scan {
+      0% { transform: translateY(-100vh); }
+      100% { transform: translateY(100vh); }
+    }
+
+    /* AI Loader Pulse */
+    @keyframes hudPulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.98); }
+      50% { opacity: 1; transform: scale(1.02); }
+    }
+    .ai-scanning {
+      animation: hudPulse 1.5s infinite ease-in-out;
+    }
+
+    /* Custom Scrollbars */
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: #060911; }
+    ::-webkit-scrollbar-thumb { background: rgba(0, 240, 255, 0.4); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: #00f0ff; }
+  </style>
+</head>
+<body class="p-3 sm:p-6 flex flex-col items-center min-h-screen">
+
+  <div class="scanline"></div>
+
+  <!-- HEADER HUD -->
+  <header class="w-full max-w-5xl mb-6">
+    <div class="hud-card rounded-lg p-4 sm:p-5 flex flex-wrap items-center justify-between gap-4">
+      
+      <div class="flex items-center space-x-4">
+        <div class="w-12 h-12 bg-slate-950 border border-hud-cyan rounded flex items-center justify-center text-hud-cyan shadow-hud-glow">
+          <i class="fa-solid fa-fire-flame-curved text-2xl animate-bounce"></i>
+        </div>
+        <div>
+          <h1 class="font-hud font-black text-xl sm:text-2xl text-hud-cyan tracking-wider flex items-center gap-2">
+            IDEAROAST <span class="text-xs px-2 py-0.5 rounded bg-cyan-950 border border-cyan-500/50 text-cyan-300 font-mono">SYSTEM AI</span>
+          </h1>
+          <p class="text-xs text-slate-400 font-hud tracking-widest">ÉVALUATEUR BRUTAL D'IDÉES & PROJETS</p>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <button onclick="toggleSound()" id="btn-audio" class="p-2.5 bg-slate-950 border border-cyan-900 text-cyan-400 rounded hover:border-hud-cyan transition">
+          <i id="audio-icon" class="fa-solid fa-volume-high text-sm"></i>
+        </button>
+        <button onclick="clearHistory()" class="px-3 py-2 bg-slate-950 border border-red-900/60 text-red-400 font-hud text-xs rounded hover:bg-red-950/50 transition">
+          <i class="fa-solid fa-trash-can mr-1"></i> VIDER L'HISTORIQUE
+        </button>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- MAIN HUD WRAPPER -->
+  <main class="w-full max-w-5xl grid grid-cols-1 lg:grid-cols-12 gap-6 flex-1">
+
+    <!-- LEFT COLUMN: INPUT FORM -->
+    <section class="lg:col-span-6 space-y-6">
+      
+      <div class="hud-card p-5 sm:p-6 rounded-lg space-y-4">
+        <h2 class="font-hud font-bold text-sm text-hud-cyan border-b border-cyan-900/60 pb-2 flex items-center gap-2">
+          <i class="fa-solid fa-brain"></i> SOUMETTRE UNE IDÉE À L'IA
+        </h2>
+
+        <form id="roast-form" onsubmit="handleFormSubmit(event)" class="space-y-4">
+          <div>
+            <label class="text-xs font-hud text-slate-300 block mb-1">MON IDÉE / CONCEPTION DE PROJET *</label>
+            <textarea id="input-idea" required rows="3" placeholder="Ex: Une appli qui livre des tacos en drone aux gamers en pleine partie..." class="w-full bg-slate-950 border border-cyan-900 rounded p-3 text-xs font-mono text-cyan-200 focus:border-hud-cyan outline-none resize-none"></textarea>
+          </div>
+
+          <div>
+            <label class="text-xs font-hud text-slate-300 block mb-1">CIBLE / AUDIENCE VISÉE</label>
+            <input type="text" id="input-target" placeholder="Ex: Gamers, étudiants, créateurs de contenu..." class="w-full bg-slate-950 border border-cyan-900 rounded p-2.5 text-xs font-mono text-cyan-200 focus:border-hud-cyan outline-none">
+          </div>
+
+          <div>
+            <label class="text-xs font-hud text-slate-300 block mb-1">PROBLÈME RÉSOLU /VALEUR AJOUTÉE</label>
+            <input type="text" id="input-problem" placeholder="Ex: Éviter de mettre en pause son jeu quand on a faim..." class="w-full bg-slate-950 border border-cyan-900 rounded p-2.5 text-xs font-mono text-cyan-200 focus:border-hud-cyan outline-none">
+          </div>
+
+          <div>
+            <label class="text-xs font-hud text-slate-300 block mb-1">STYLE DE ROAST (TON DE L'IA)</label>
+            <select id="input-style" class="w-full bg-slate-950 border border-cyan-900 rounded p-2.5 text-xs font-hud text-cyan-300 focus:border-hud-cyan outline-none">
+              <option value="brutal">🔥 Destructeur & Humoristique (Direct sans filtre)</option>
+              <option value="sarcastic">😏 Cynique & Ironique (Spécial Investisseur)</option>
+              <option value="constructive">💡 Constructif & Réaliste (Plus modéré)</option>
+            </select>
+          </div>
+
+          <button type="submit" id="btn-submit" class="w-full py-3 bg-hud-cyan text-slate-950 font-hud font-black text-sm tracking-wider rounded shadow-neon-btn hover:bg-cyan-300 transition flex items-center justify-center gap-2">
+            <i class="fa-solid fa-bolt"></i> ANALYSER & ROASTER L'IDÉE
+          </button>
+        </form>
+      </div>
+
+      <!-- HISTORY LOG PANEL -->
+      <div class="hud-card p-5 rounded-lg space-y-3">
+        <h3 class="font-hud font-bold text-xs text-hud-cyan border-b border-cyan-900/60 pb-2 flex items-center justify-between">
+          <span><i class="fa-solid fa-clock-rotate-left"></i> HISTORIQUE DES TESTS</span>
+          <span class="text-[10px] font-mono text-slate-400" id="history-count">0 enregistrés</span>
+        </h3>
+
+        <div id="history-list" class="space-y-2 max-h-56 overflow-y-auto pr-1">
+          <p class="text-xs text-slate-500 italic text-center py-4">Aucune idée testée pour le moment.</p>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- RIGHT COLUMN: AI RESPONSE & GAUGE -->
+    <section class="lg:col-span-6 space-y-6">
+
+      <!-- WELCOME / PLACEHOLDER CARD -->
+      <div id="ai-idle" class="hud-card p-8 rounded-lg text-center space-y-4">
+        <div class="w-16 h-16 mx-auto bg-slate-950 border border-cyan-800 rounded-full flex items-center justify-center text-hud-cyan text-2xl shadow-hud-glow">
+          <i class="fa-solid fa-microchip animate-pulse"></i>
+        </div>
+        <h3 class="font-hud font-bold text-base text-hud-cyan">PRÊT POUR L'ÉVALUATION</h3>
+        <p class="text-xs text-slate-400 max-w-sm mx-auto leading-relaxed">
+          Remplis le formulaire pour soumettre ton idée. L'IA Gemini analysera ton concept avec pertinence, réalisme et un brin de punch !
+        </p>
+      </div>
+
+      <!-- LOADING STATE -->
+      <div id="ai-loading" class="hud-card p-8 rounded-lg text-center space-y-4 hidden ai-scanning border-hud-cyan">
+        <div class="w-16 h-16 mx-auto bg-slate-950 border border-hud-cyan rounded-full flex items-center justify-center text-hud-cyan text-2xl shadow-hud-glow">
+          <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </div>
+        <h3 class="font-hud font-bold text-base text-hud-cyan tracking-widest">ANALYSE DU SYSTÈME EN COURS...</h3>
+        <p class="text-xs text-mono text-slate-300">Évaluation de la faisabilité, marché, pertinence...</p>
+      </div>
+
+      <!-- RESULTS PANEL -->
+      <div id="ai-results" class="hud-card p-6 rounded-lg space-y-5 hidden">
+        
+        <!-- VERDICT BANNER -->
+        <div id="verdict-banner" class="p-4 rounded border text-center space-y-2 transition-all">
+          <span class="text-[10px] font-hud tracking-widest uppercase text-slate-400">VERDICT DE L'IA</span>
+          <div id="verdict-title" class="font-hud font-black text-2xl uppercase tracking-wider flex items-center justify-center gap-2">
+            <!-- Nul, Mid or Pépite badge injected -->
+          </div>
+          <p id="verdict-tagline" class="text-xs italic font-body text-slate-300 max-w-md mx-auto"></p>
+        </div>
+
+        <!-- RATING GAUGES -->
+        <div class="space-y-2 bg-slate-950 p-4 rounded border border-cyan-950 font-mono text-xs">
+          <div class="flex justify-between text-slate-300">
+            <span>Score de Viabilité :</span>
+            <span id="score-val" class="font-bold text-hud-cyan">0/100</span>
+          </div>
+          <div class="w-full bg-slate-900 rounded-full h-2.5 overflow-hidden border border-cyan-900">
+            <div id="score-bar" class="h-full bg-hud-cyan transition-all duration-1000 w-0"></div>
+          </div>
+        </div>
+
+        <!-- ROAST SUMMARY -->
+        <div class="space-y-2">
+          <h4 class="font-hud font-bold text-xs text-hud-cyan flex items-center gap-2">
+            <i class="fa-solid fa-fire"></i> LE ROAST BRUTAL
+          </h4>
+          <p id="roast-text" class="text-xs font-mono text-cyan-100 bg-slate-950/80 p-3.5 rounded border border-cyan-900/60 leading-relaxed"></p>
+        </div>
+
+        <!-- PROS & CONS -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
+          <div class="bg-slate-950 p-3 rounded border border-emerald-900/60 space-y-1.5">
+            <span class="font-hud font-bold text-emerald-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-thumbs-up"></i> POINTS FORTS
+            </span>
+            <ul id="pros-list" class="list-disc list-inside text-slate-300 space-y-1 font-body"></ul>
+          </div>
+
+          <div class="bg-slate-950 p-3 rounded border border-red-900/60 space-y-1.5">
+            <span class="font-hud font-bold text-red-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-thumbs-down"></i> POINTS FAIBLES
+            </span>
+            <ul id="cons-list" class="list-disc list-inside text-slate-300 space-y-1 font-body"></ul>
+          </div>
+        </div>
+
+        <!-- BRUTAL TRUTH & PIVOT -->
+        <div class="space-y-3">
+          <div class="bg-slate-950 p-3.5 rounded border border-amber-900/60 space-y-1">
+            <span class="font-hud font-bold text-xs text-amber-400 flex items-center gap-1.5">
+              <i class="fa-solid fa-triangle-exclamation"></i> LA VÉRITÉ QUI BLESSE
+            </span>
+            <p id="truth-text" class="text-xs text-slate-300 font-body leading-relaxed"></p>
+          </div>
+
+          <div class="bg-slate-950 p-3.5 rounded border border-cyan-900/80 space-y-1">
+            <span class="font-hud font-bold text-xs text-hud-cyan flex items-center gap-1.5">
+              <i class="fa-solid fa-compass"></i> PIVOT / SUGGESTION
+            </span>
+            <p id="pivot-text" class="text-xs text-slate-300 font-body leading-relaxed"></p>
+          </div>
+        </div>
+
+      </div>
+
+    </section>
+
+  </main>
+
+  <script>
+    // WEB AUDIO SYNTHESIZER FOR SFX
+    class SoundFX {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+      init() {
+        if (!this.ctx) {
+          const AudioCtx = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioCtx();
+        }
+      }
+      playClick() {
+        if (this.muted) return; this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime);
+        osc.frequency.exponentialRampToValueAtTime(400, this.ctx.currentTime + 0.04);
+        gain.gain.setValueAtTime(0.1, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.04);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.04);
+      }
+      playScan() {
+        if (this.muted) return; this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(300, this.ctx.currentTime);
+        osc.frequency.linearRampToValueAtTime(900, this.ctx.currentTime + 0.2);
+        gain.gain.setValueAtTime(0.08, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.2);
+      }
+      playSuccess() {
+        if (this.muted) return; this.init();
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(400, this.ctx.currentTime);
+        osc.frequency.setValueAtTime(800, this.ctx.currentTime + 0.08);
+        osc.frequency.setValueAtTime(1200, this.ctx.currentTime + 0.16);
+        gain.gain.setValueAtTime(0.12, this.ctx.currentTime);
+        gain.gain.exponentialRampToValueAtTime(0.01, this.ctx.currentTime + 0.25);
+        osc.connect(gain); gain.connect(this.ctx.destination);
+        osc.start(); osc.stop(this.ctx.currentTime + 0.25);
+      }
+    }
+    const sfx = new SoundFX();
+
+    function toggleSound() {
+      sfx.muted = !sfx.muted;
+      document.getElementById('audio-icon').className = sfx.muted ? 'fa-solid fa-volume-xmark text-red-400' : 'fa-solid fa-volume-high text-cyan-300';
+    }
+
+    // LOCAL STORAGE HISTORY
+    let historyData = JSON.parse(localStorage.getItem('idearoast_history')) || [];
+
+    function saveHistoryItem(item) {
+      historyData.unshift(item);
+      if (historyData.length > 20) historyData.pop();
+      localStorage.setItem('idearoast_history', JSON.stringify(historyData));
+      renderHistory();
+    }
+
+    function renderHistory() {
+      const container = document.getElementById('history-list');
+      document.getElementById('history-count').innerText = `${historyData.length} enregistrés`;
+
+      if (historyData.length === 0) {
+        container.innerHTML = '<p class="text-xs text-slate-500 italic text-center py-4">Aucune idée testée pour le moment.</p>';
+        return;
+      }
+
+      container.innerHTML = historyData.map((item, idx) => {
+        let badgeColor = 'text-red-400 border-red-900';
+        if (item.verdict === 'Mid') badgeColor = 'text-amber-400 border-amber-900';
+        if (item.verdict === 'Pépite') badgeColor = 'text-emerald-400 border-emerald-900';
+
+        return `
+          <div onclick="loadHistoryItem(${idx})" class="p-2.5 bg-slate-950 border border-cyan-950 rounded hover:border-cyan-800 transition cursor-pointer flex items-center justify-between text-xs">
+            <div class="truncate max-w-[200px] sm:max-w-[260px]">
+              <span class="font-bold text-cyan-200 block truncate">${item.idea}</span>
+              <span class="text-[10px] text-slate-500 font-mono">${item.date}</span>
+            </div>
+            <span class="font-hud font-bold text-[10px] px-2 py-0.5 border rounded ${badgeColor}">${item.verdict}</span>
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadHistoryItem(idx) {
+      sfx.playClick();
+      const item = historyData[idx];
+      if (!item) return;
+      displayResults(item.analysis, item.idea);
+    }
+
+    function clearHistory() {
+      sfx.playClick();
+      historyData = [];
+      localStorage.removeItem('idearoast_history');
+      renderHistory();
+    }
+
+    // FORM SUBMIT & GEMINI API CALL
+    async function handleFormSubmit(e) {
+      e.preventDefault();
+      sfx.playScan();
+
+      const idea = document.getElementById('input-idea').value.trim();
+      const target = document.getElementById('input-target').value.trim() || 'Non spécifié';
+      const problem = document.getElementById('input-problem').value.trim() || 'Non spécifié';
+      const style = document.getElementById('input-style').value;
+
+      if (!idea) return;
+
+      // Toggle UI Loading
+      document.getElementById('ai-idle').classList.add('hidden');
+      document.getElementById('ai-results').classList.add('hidden');
+      document.getElementById('ai-loading').classList.remove('hidden');
+
+      const systemPrompt = `Tu es une IA de startup/venture studio spécialisée dans l'évaluation d'idées de projets et de business. 
+Ton rôle est d'analyser l'idée avec un ton humoristique, percutant et sans filtre (${style === 'brutal' ? 'très cash et drôle' : style === 'sarcastic' ? 'ironique et cynique' : 'constructif et réaliste'}).
+Tu dois obligatoirement attribuer une catégorie stricte parmi ces 3 :
+1. "Totalement Nul" (si l'idée n'a aucun sens économique ou pratique)
+2. "Mid" (si l'idée est classique, passable ou a besoin d'un gros pivot)
+3. "Pépite" (si l'idée est brillante, originale et a un fort potentiel)
+
+Réponds STRICTEMENT sous forme d'un objet JSON valide au format suivant :
+{
+  "verdict": "Totalement Nul" | "Mid" | "Pépite",
+  "score": integer entre 0 et 100,
+  "tagline": "Une phrase choc résumant le verdict",
+  "roast": "Un paragraphe drôle et cash analysant l'idée",
+  "pros": ["Point fort 1", "Point fort 2"],
+  "cons": ["Point faible 1", "Point faible 2"],
+  "truth": "La vérité qui blesse sur ce marché/projet",
+  "pivot": "Une suggestion concrète d'amélioration ou de pivot"
+}`;
+
+      const userQuery = `Analyse cette idée de projet :
+- Idée : ${idea}
+- Public Cible : ${target}
+- Problème Résolu : ${problem}`;
+
+      try {
+        const apiKey = "";
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-flash-preview:generateContent?key=${apiKey}`;
+
+        const payload = {
+          contents: [{ parts: [{ text: userQuery }] }],
+          systemInstruction: { parts: [{ text: systemPrompt }] },
+          generationConfig: {
+            responseMimeType: "application/json"
+          }
+        };
+
+        const response = await fetch(apiUrl, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(payload)
+        });
+
+        const result = await response.json();
+        const jsonText = result?.candidates?.[0]?.content?.parts?.[0]?.text;
+
+        if (!jsonText) throw new Error("Réponse IA vide ou invalide.");
+
+        const analysis = JSON.parse(jsonText);
+
+        // Save to History
+        const historyItem = {
+          idea,
+          verdict: analysis.verdict,
+          date: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+          analysis
+        };
+        saveHistoryItem(historyItem);
+
+        displayResults(analysis, idea);
+        sfx.playSuccess();
+
+      } catch (err) {
+        console.error(err);
+        alert("Erreur lors de la communication avec l'IA. Veuillez réessayer.");
+        document.getElementById('ai-loading').classList.add('hidden');
+        document.getElementById('ai-idle').classList.remove('hidden');
+      }
+    }
+
+    function displayResults(data, ideaText) {
+      document.getElementById('ai-loading').classList.add('hidden');
+      document.getElementById('ai-results').classList.remove('hidden');
+
+      const banner = document.getElementById('verdict-banner');
+      const title = document.getElementById('verdict-title');
+      const tagline = document.getElementById('verdict-tagline');
+      const scoreBar = document.getElementById('score-bar');
+      const scoreVal = document.getElementById('score-val');
+
+      title.innerText = data.verdict;
+      tagline.innerText = `"${data.tagline}"`;
+      scoreVal.innerText = `${data.score}/100`;
+
+      // Gauge & Theme Styling based on Verdict
+      if (data.verdict === 'Totalement Nul') {
+        banner.className = 'p-4 rounded border text-center space-y-2 bg-red-950/40 border-red-500/50 shadow-nul-glow text-red-400';
+        scoreBar.className = 'h-full transition-all duration-1000 bg-red-500';
+      } else if (data.verdict === 'Mid') {
+        banner.className = 'p-4 rounded border text-center space-y-2 bg-amber-950/40 border-amber-500/50 shadow-mid-glow text-amber-400';
+        scoreBar.className = 'h-full transition-all duration-1000 bg-amber-500';
+      } else {
+        banner.className = 'p-4 rounded border text-center space-y-2 bg-emerald-950/40 border-emerald-500/50 shadow-pepite-glow text-emerald-400';
+        scoreBar.className = 'h-full transition-all duration-1000 bg-emerald-400';
+      }
+
+      setTimeout(() => {
+        scoreBar.style.width = `${data.score}%`;
+      }, 100);
+
+      document.getElementById('roast-text').innerText = data.roast;
+      document.getElementById('truth-text').innerText = data.truth;
+      document.getElementById('pivot-text').innerText = data.pivot;
+
+      document.getElementById('pros-list').innerHTML = (data.pros || []).map(p => `<li>${p}</li>`).join('');
+      document.getElementById('cons-list').innerHTML = (data.cons || []).map(c => `<li>${c}</li>`).join('');
+    }
+
+    // INIT
+    window.onload = function() {
+      renderHistory();
+    };
+  </script>
+</body>
+</html>
